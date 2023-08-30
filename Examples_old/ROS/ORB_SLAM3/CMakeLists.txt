@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.4.6)
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 
+add_subdirectory(vision_opencv) #wz-new add
+
 rosbuild_init()
 
 IF(NOT ROS_BUILD_TYPE)
@@ -30,7 +32,8 @@ endif()
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../../../cmake_modules)
 
-find_package(OpenCV 3.0 QUIET)
+set(OpenCV_DIR "/usr/local/lib/cmake/opencv4") #wz
+find_package(OpenCV 4 QUIET) #wz
 if(NOT OpenCV_FOUND)
    find_package(OpenCV 2.4.3 QUIET)
    if(NOT OpenCV_FOUND)
@@ -46,6 +49,7 @@ ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/../../../
 ${PROJECT_SOURCE_DIR}/../../../include
 ${PROJECT_SOURCE_DIR}/../../../include/CameraModels
+${PROJECT_SOURCE_DIR}/../../../Thirdparty/Sophus
 ${Pangolin_INCLUDE_DIRS}
 )
 
@@ -59,6 +63,12 @@ ${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM3.so
 -lboost_system
 )
 
+
+#MESSAGE( STATUS "LIBS = ${LIBS}.") #wz
+#file(GLOB_RECURSE OLD_OPENCV "/usr/lib/x86_64-linux-gnu/libopencv*") #wz
+#list(REMOVE_ITEM LIBS ${OLD_OPENCV}) #wz
+
+
 # Node for monocular camera
 rosbuild_add_executable(Mono
 src/ros_mono.cc
@@ -69,15 +79,15 @@ ${LIBS}
 )
 
 # Node for monocular camera (Augmented Reality Demo)
-rosbuild_add_executable(MonoAR
-src/AR/ros_mono_ar.cc
-src/AR/ViewerAR.h
-src/AR/ViewerAR.cc
-)
+#rosbuild_add_executable(MonoAR
+#src/AR/ros_mono_ar.cc
+#src/AR/ViewerAR.h
+#src/AR/ViewerAR.cc
+#)
 
-target_link_libraries(MonoAR
-${LIBS}
-)
+#target_link_libraries(MonoAR
+#${LIBS}
+#)
 
 # Node for stereo camera
 rosbuild_add_executable(Stereo
@@ -103,6 +113,15 @@ src/ros_mono_inertial.cc
 )
 
 target_link_libraries(Mono_Inertial
+${LIBS}
+)
+
+# Node for rgbd-inertial camera
+rosbuild_add_executable(RGBD_Inertial
+src/ros_rgbd_inertial.cc
+)
+
+target_link_libraries(RGBD_Inertial
 ${LIBS}
 )
 

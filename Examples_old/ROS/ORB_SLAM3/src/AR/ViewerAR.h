@@ -22,6 +22,9 @@
 
 #include <mutex>
 #include <opencv2/core/core.hpp>
+#include <Eigen/Dense>
+#include <opencv2/core/eigen.hpp>
+#include <opencv2/opencv.hpp>
 #include <pangolin/pangolin.h>
 #include <string>
 #include"../../../include/System.h"
